@@ -1,8 +1,4 @@
 ---
 layout: home
-title: "Ana Sayfa"
+title: "Günce"
 ---
-
-# Hoş geldin!
-
-Yeni yazılar burada listelenecek.
