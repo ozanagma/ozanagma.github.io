@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>C#’da libclang kullanımı | Ozan’ın Blogu</title>
+<meta name="generator" content="Jekyll v3.10.0" />
+<meta property="og:title" content="C#’da libclang kullanımı" />
+<meta name="author" content="Ozan" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="C# dilinde libclang kullanarak C++ kodlarını ayrıştırmak mümkün mü? Bu yazıda libclang kütüphanesini C# ile nasıl kullanabileceğimizi adım adım göstereceğim." />
+<meta property="og:description" content="C# dilinde libclang kullanarak C++ kodlarını ayrıştırmak mümkün mü? Bu yazıda libclang kütüphanesini C# ile nasıl kullanabileceğimizi adım adım göstereceğim." />
+<link rel="canonical" href="http://localhost:4000/yaz%C4%B1l%C4%B1m/csharp/2025/03/22/csharp-libclang.html" />
+<meta property="og:url" content="http://localhost:4000/yaz%C4%B1l%C4%B1m/csharp/2025/03/22/csharp-libclang.html" />
+<meta property="og:site_name" content="Ozan’ın Blogu" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2025-03-22T00:00:00+03:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="C#’da libclang kullanımı" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ozan"},"dateModified":"2025-03-22T00:00:00+03:00","datePublished":"2025-03-22T00:00:00+03:00","description":"C# dilinde libclang kullanarak C++ kodlarını ayrıştırmak mümkün mü? Bu yazıda libclang kütüphanesini C# ile nasıl kullanabileceğimizi adım adım göstereceğim.","headline":"C#’da libclang kullanımı","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/yaz%C4%B1l%C4%B1m/csharp/2025/03/22/csharp-libclang.html"},"url":"http://localhost:4000/yaz%C4%B1l%C4%B1m/csharp/2025/03/22/csharp-libclang.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@latest/css/all.min.css">
+  <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Ozan&apos;ın Blogu" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper">
+    <a class="site-title" rel="author" href="/">Ozan&#39;ın Blogu</a>
+      <nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon fas fa-bars fa-lg"></span>
+        </label>
+
+        <div class="drawer-container">
+          <div class="drawer">
+  <a class="nav-item" href="/about/">Hakkımda</a>
+  <a class="nav-item" href="/">Ana Sayfa</a>
+          </div>
+        </div>
+        <div class="slab">
+  <a class="nav-item" href="/about/">Hakkımda</a>
+  <a class="nav-item" href="/">Ana Sayfa</a>
+        </div>
+      </nav>
+  </div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">C#&#39;da libclang kullanımı</h1>
+    <div class="post-meta">
+      <time class="dt-published" datetime="2025-03-22T00:00:00+03:00" itemprop="datePublished">
+        Mar 22, 2025
+      </time>
+    </div>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>C# dilinde <code class="language-plaintext highlighter-rouge">libclang</code> kullanarak C++ kodlarını ayrıştırmak mümkün mü?<br />
+Bu yazıda <code class="language-plaintext highlighter-rouge">libclang</code> kütüphanesini C# ile nasıl kullanabileceğimizi adım adım göstereceğim.</p>
+
+<p>Hadi başlayalım! 🚀</p>
+
+<p>Olabildiğince çok tipin olduğu yapabildiğimiz kadar karmaşık bir struct yapalım. 
+Aşağıdaki struct hem başka bir structtan türüyor ve türediği struct’ın bazı elemanlarını ilkliyor.
+hem içerisinde bir enum tutuyor, hem de yine bir eleman olarak struct barındırıyor.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma once
+</span>
+<span class="cp">#include</span> <span class="cpf">&lt;cstdint&gt;</span><span class="cp">
+</span>
+<span class="cp">#pragma pack(push, 1)
+</span>
+<span class="k">struct</span> <span class="nc">STestBase</span>
+<span class="p">{</span>
+  <span class="kt">uint16_t</span> <span class="n">Base0</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">Base1</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">enum</span> <span class="k">class</span> <span class="nc">ETest</span>
+<span class="p">{</span>
+  <span class="n">Test0</span><span class="p">,</span>
+  <span class="n">Test1</span><span class="p">,</span>
+  <span class="n">Test2</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">namespace</span> <span class="n">NTest</span>
+<span class="p">{</span>
+  <span class="k">struct</span> <span class="nc">STest</span>
+  <span class="p">{</span>
+    <span class="kt">float</span> <span class="n">Test1</span><span class="p">;</span>
+    <span class="kt">double</span> <span class="n">Test2</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="nc">STest</span> <span class="o">:</span> <span class="n">STestBase</span>
+<span class="p">{</span>
+  <span class="kt">uint64_t</span> <span class="n">Test0</span><span class="p">;</span>  
+  <span class="kt">uint32_t</span> <span class="n">Test1</span><span class="p">;</span>
+  <span class="kt">uint16_t</span> <span class="n">Test2</span><span class="p">;</span>
+  <span class="kt">uint8_t</span> <span class="n">Test3</span><span class="p">;</span>
+
+  <span class="kt">int64_t</span> <span class="n">Test4</span><span class="p">;</span>
+  <span class="kt">int32_t</span> <span class="n">Test5</span><span class="p">;</span>
+  <span class="kt">int16_t</span> <span class="n">Test6</span><span class="p">;</span>
+  <span class="kt">int8_t</span> <span class="n">Test7</span><span class="p">;</span>
+
+  <span class="kt">float</span> <span class="n">Test8</span><span class="p">;</span>
+  <span class="kt">double</span> <span class="n">Test9</span><span class="p">;</span>
+
+  <span class="kt">uint8_t</span> <span class="n">Test10</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+	
+  <span class="kt">bool</span> <span class="n">Test11</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">Test12</span><span class="p">;</span>
+
+  <span class="n">NTest</span><span class="o">::</span><span class="n">STest</span> <span class="n">Test13</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="cp">#pragma pack(pop)
+</span></code></pre></div></div>
+
+  </div><a class="u-url" href="/yaz%C4%B1l%C4%B1m/csharp/2025/03/22/csharp-libclang.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="http://localhost:4000/feed.xml">
+            <svg class="svg-icon orange">
+              <path d="M12.8 16C12.8 8.978 7.022 3.2 0 3.2V0c8.777 0 16 7.223 16 16h-3.2zM2.194
+                11.61c1.21 0 2.195.985 2.195 2.196 0 1.21-.99 2.194-2.2 2.194C.98 16 0 15.017 0
+                13.806c0-1.21.983-2.195 2.194-2.195zM10.606
+                16h-3.11c0-4.113-3.383-7.497-7.496-7.497v-3.11c5.818 0 10.606 4.79 10.606 10.607z"
+              />
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+        <ul class="contact-list">
+          
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p>Kodlar, düşünceler ve bolca kahve.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+
+</body>
+
+</html>
