@@ -6,3 +6,5 @@ baseurl: ""
 url: "https://ozanagma.github.io"
 
 remote_theme: jekyll/minima
+
+BASE_PATH : /
