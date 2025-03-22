@@ -67,7 +67,7 @@ Bu yazıda <code class="language-plaintext highlighter-rouge">libclang</code> k�
 
 <p>Olabildiğince çok tipin olduğu yapabildiğimiz kadar karmaşık bir struct yapalım. 
 Aşağıdaki struct hem başka bir structtan türüyor ve türediği struct’ın bazı elemanlarını ilkliyor.
-hem içerisinde bir enum tutuyor, hem de yine bir eleman olarak struct barındırıyor.</p>
+hem içerisinde bir enum tutuyor, hem de yine bir eleman olarak bir namespace içerisinde struct barındırıyor.</p>
 
 <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#pragma once
 </span>
@@ -122,6 +122,11 @@ hem içerisinde bir enum tutuyor, hem de yine bir eleman olarak struct barındı
 
 <span class="cp">#pragma pack(pop)
 </span></code></pre></div></div>
+
+<p>Bu dosyayı cpp elemanlarına ayrıştırmak için Tools → Nuget Package Manager → Manage Nuget Packages for Solutions ‘a gidip
+ClangSharp paketini yüklemeliyiz. Bu yazının yazıldığı tarihte en güncel ve kararlı sürüm 18.1.0.3’tür.</p>
+
+<p><img src="/assets/images/clangsharp_ver.png" alt="ClangSharp Versiyon" /></p>
 
   </div><a class="u-url" href="/yaz%C4%B1l%C4%B1m/csharp/2025/03/22/csharp-libclang.html" hidden></a>
 </article>

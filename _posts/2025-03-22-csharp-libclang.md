@@ -13,7 +13,8 @@ Hadi başlayalım! 🚀
 
 Olabildiğince çok tipin olduğu yapabildiğimiz kadar karmaşık bir struct yapalım. 
 Aşağıdaki struct hem başka bir structtan türüyor ve türediği struct'ın bazı elemanlarını ilkliyor.
-hem içerisinde bir enum tutuyor, hem de yine bir eleman olarak struct barındırıyor.
+hem içerisinde bir enum tutuyor, hem de yine bir eleman olarak bir namespace içerisinde struct barındırıyor.
+
 
 ```c++
 #pragma once
@@ -69,3 +70,8 @@ struct STest : STestBase
 
 #pragma pack(pop)
 ```
+
+Bu dosyayı cpp elemanlarına ayrıştırmak için Tools → Nuget Package Manager → Manage Nuget Packages for Solutions 'a gidip
+ClangSharp paketini yüklemeliyiz. Bu yazının yazıldığı tarihte en güncel ve kararlı sürüm 18.1.0.3'tür.
+
+![ClangSharp Versiyon](/assets/images/clangsharp_ver.png)
