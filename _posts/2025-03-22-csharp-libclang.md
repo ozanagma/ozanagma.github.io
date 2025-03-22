@@ -74,4 +74,4 @@ struct STest : STestBase
 Bu dosyayı cpp elemanlarına ayrıştırmak için Tools → Nuget Package Manager → Manage Nuget Packages for Solutions 'a gidip
 ClangSharp paketini yüklemeliyiz. Bu yazının yazıldığı tarihte en güncel ve kararlı sürüm 18.1.0.3'tür.
 
-![ClangSharp Versiyon](/assets/images/clangsharp_ver.png)
+![ClangSharp Versiyon]({{ "/assets/images/clangsharp_ver.png" | relative_url }})
