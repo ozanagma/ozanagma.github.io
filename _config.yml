@@ -1,11 +1,8 @@
 title: "Ozan Ağma"
 description: "Öğrendiklerim."
-author: "Ozan"
+author: "Ozan Ağma"
 email: "ozanagma@gmail.com"
 baseurl: ""
 url: "https://ozanagma.github.io"
 
 remote_theme: jekyll/minima
-
-url: 'https://ozanagma.github.io/'
-baseurl: ''
