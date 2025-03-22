@@ -1,0 +1,8 @@
+title: "Ozan'ın Blogu"
+description: "Kodlar, düşünceler ve bolca kahve."
+author: "Ozan"
+email: "ozan@example.com"
+baseurl: ""
+url: "https://ozanagma.github.io"
+
+remote_theme: jekyll/minima
